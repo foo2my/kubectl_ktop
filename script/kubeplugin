@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [[ $# -lt 3 ]]; then
+  echo "Usage: $0 <resource_type> <namespace> <command: top/get>"
+  exit 1
+fi
+
+RESOURCE_TYPE="$1"
+NAMESPACE="$2"
+COMMAND="$3"
+
+kubectl "$COMMAND" "$RESOURCE_TYPE" -n "$NAMESPACE" | tail -n +2 | while read -r name cpu memory _; do
+  if [[ -n "$name" ]]; then
+     echo "$RESOURCE_TYPE, $NAMESPACE, $name, $cpu, $memory"
+  fi
+done
